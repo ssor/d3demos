@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="../js/ramda.js"></script>
+    <!-- <script src="../js/d3.v5.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+        .links line {
+            stroke: #aaa;
+        }
+
+        .links path {
+            stroke: #aaa;
+        }
+
+        .nodes circle {
+            pointer-events: all;
+            stroke: none;
+            stroke-width: 4px;
+        }
+
+        .companies circle {
+            pointer-events: all;
+            stroke: none;
+            stroke-width: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="960" height="600">
+        <defs>
+            <marker id="arrow" markerUnits="strokeWidth" markerWidth="20" markerHeight="20" viewBox="0 0 12 12" refX="6"
+                refY="6" orient="auto">
+                <path d="M2,2 L10,6 L2,10 L6,6 L2,2" style="fill: #000;"></path>
+            </marker>
+        </defs>
+    </svg>
+    <script>
+        var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+
+        var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function (d) { return d.id; }).distance(80).strength(1))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2));
+
+        var rLinearScale = d3.scaleLinear()
+            .domain([0, 5000])
+            .range([5, 30]);
+
+        d3.json("data.json", function (error, graph) {
+            if (error) throw error;
+
+            var link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("path")
+                .data(graph.links)
+                .enter().append("path")
+
+            var node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(graph.nodes)
+                .enter().append("circle")
+                .attr("r", function (d) {
+                    if (d.type == "cc") {
+                        return rLinearScale(d.value);
+                    } else {
+                        return d.r;
+                    }
+                })
+                .attr("fill", function (d) {
+                    return d.color;
+                })
+                .attr("style", function (d) {
+                    if (d.type == "fin") {
+                        return "stroke:black;"
+                    } else {
+                        return "";
+                    }
+                })
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+
+
+            node.append("title")
+                .text(function (d) { return d.id; });
+
+            simulation
+                .nodes(graph.nodes)
+                .on("tick", ticked);
+
+            simulation.force("link")
+                .links(graph.links);
+
+            function ticked() {
+                link
+                    .attr("d", function (d) { return makePath(d.source, d.target, d.target.r + 5); })
+                    .attr("marker-end", function (d) { return 'url(#arrow)'; })
+                node
+                    .attr("cx", function (d) { return d.x; })
+                    .attr("cy", function (d) { return d.y; });
+            }
+        });
+
+        function lineDest(source, target, r) {
+            var deltaX = Math.abs(source.x - target.x);
+            var deltaY = Math.abs(source.y - target.y);
+            var R = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            var normX = r * deltaX / R;
+            var normY = r * deltaY / R;
+        }
+
+        function makePath(source, target, r) {
+            // console.log("r => ",r);
+            var deltaX = target.x - source.x,
+                deltaY = target.y - source.y,
+                dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                normX = deltaX / dist,
+                normY = deltaY / dist,
+                targetX = target.x - (r * normX),
+                targetY = target.y - (r * normY);
+            var path = R.join(' ', ['M', source.x, source.y, 'L', targetX, targetY])
+            // console.log("path: ", path);
+            return path
+        }
+
+        function dragstarted(d) {
+            if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(d) {
+            d.fx = d3.event.x;
+            d.fy = d3.event.y;
+        }
+
+        function dragended(d) {
+            if (!d3.event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+    </script>
+</body>

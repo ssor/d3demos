@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  background: white;
+}
+
+.bars line {
+  stroke: #333;
+  stroke-width: 1.5px;
+  stroke-dasharray: 4px 10px;
+}
+
+.labels text {
+  font: 12px sans-serif;
+  text-anchor: middle;
+}
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  fill: #d62333;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+
+</style>
+<svg></svg>
+<script src="../js/d3.v5.js"></script>
+<script src="d3-force-sampled.js"></script>
+<script>
+
+var width = 960;
+var height = 250;
+var nodeRadius = d3.scaleSqrt().range([4, 10]);
+var linkWidth = d3.scaleLinear().range([1, 2 * nodeRadius.range()[0]])
+var padding = nodeRadius.range()[1] + 2;
+var radius = Math.min(width - padding, height - padding)/2;
+var xGravity = d3.scaleOrdinal();
+var xMin = d3.scaleOrdinal();
+var xMax = d3.scaleOrdinal();
+
+var drag = d3.drag()
+  .on('start', dragStart)
+  .on('drag', dragging)
+  .on('end', dragEnd);
+
+var svg = d3.select('svg')
+  .attr('width', width)
+  .attr('height', height);
+
+var linkForce = d3.forceLink()
+  .id(function(d) { return d.id; })
+  .strength(function (d) {
+    if (d.source.firstVolume === d.target.firstVolume)
+      return 0.2;
+    else return Math.pow(0.05, Math.abs(+d.source.firstVolume - +d.target.firstVolume));
+  });
+
+var forceSim = d3.forceSimulation()
+  .velocityDecay(0.2)
+  .force('link', linkForce)
+  .force('charge', d3.forceManyBodySampled())
+  .force('forceX', d3.forceX().strength(0.01).x(function (d) { return xGravity(d.firstVolume); }))
+  .force('forceY', d3.forceY().strength(0.01).y(function (d) { return height / 2; }));
+
+d3.json('jean.json').then(function (graph) {
+  var volumes = d3.set(graph.nodes.map(function (d) {
+    d.firstVolume = d.chapters.map(function (c) { return c[0]; }).sort()[0];
+    return d.firstVolume;
+  })).values().sort();
+
+  // Make sure small nodes are drawn on top of larger nodes
+  graph.nodes.sort(function (a, b) { return b.chapters.length - a.chapters.length; });
+
+  nodeRadius.domain([graph.nodes[graph.nodes.length-1].chapters.length, graph.nodes[0].chapters.length]);
+
+  linkWidth.domain(d3.extent(graph.links, function (d) { return d.chapters.length; }));
+
+  xGravity.domain(volumes).range(d3.range(0,volumes.length).map(function (d) { return width / (2 * volumes.length) + d * width / volumes.length; }));
+  xMin.domain(volumes).range(d3.range(0,volumes.length).map(function (d) { return d * width / volumes.length; }));
+  xMax.domain(volumes).range(d3.range(0,volumes.length).map(function (d) { return (d + 1) * width / volumes.length; }));
+
+  graph.nodes.forEach(function (d) { d.x = xGravity(d.firstVolume) + width * (Math.random() - 0.5); d.y = height * (Math.random() - 0.5); });
+
+  var bars = svg.append('g')
+    .attr('class', 'bars')
+    .selectAll('line')
+    .data(volumes.slice(0, volumes.length - 1))
+    .enter().append('line')
+    .attr('x1', function (d) { return xMax(d); })
+    .attr('y1', 0)
+    .attr('x2', function (d) { return xMax(d); })
+    .attr('y2', height);
+
+  var labels = svg.append('g')
+    .attr('class', 'labels')
+    .selectAll('text')
+    .data(volumes)
+    .enter().append('text')
+    .attr('x', function (d) { return xGravity(d); })
+    .attr('y', height - 10)
+    .attr('dy', '0.35em')
+    .text(function (d) { return 'Vol. ' + d; });
+
+  var link = svg.append('g')
+    .attr('class', 'links')
+    .selectAll('line')
+    .data(graph.links)
+    .enter().append('line')
+    .attr('stroke-width', function (d) { return linkWidth(d.chapters.length); });
+
+  var node = svg.append('g')
+    .attr('class', 'nodes')
+    .selectAll('circle')
+    .data(graph.nodes)
+    .enter().append('circle')
+    .attr('r', function (d) { return nodeRadius(d.chapters.length); })
+    .call(drag);
+
+  node.append('title').text(function (d) { return d.name; });
+
+  forceSim.nodes(graph.nodes)
+    .on('tick', tick);
+
+  forceSim.force('link').links(graph.links);
+
+  function tick () {
+    graph.nodes.forEach(function (d) {
+      // Viewport constraint.
+      if (d.y < 0 + nodeRadius(d.chapters.length)) d.y = nodeRadius(d.chapters.length);
+      else if (d.y > height - nodeRadius(d.chapters.length)) d.y = height - nodeRadius(d.chapters.length);
+
+      // Chapter boundary constraints.
+      if (d.x < xMin(d.firstVolume) + nodeRadius(d.chapters.length) + 2) d.x = xMin(d.firstVolume) + nodeRadius(d.chapters.length) + 2;
+      else if (d.x > xMax(d.firstVolume) - nodeRadius(d.chapters.length) - 2) d.x = xMax(d.firstVolume) - nodeRadius(d.chapters.length) - 2;
+    });
+
+    link
+      .attr('x1', function (d) { return d.source.x; })
+      .attr('x2', function (d) { return d.target.x; })
+      .attr('y1', function (d) { return d.source.y; })
+      .attr('y2', function (d) { return d.target.y; });
+
+    node
+      .attr('cx', function (d) { return d.x; })
+      .attr('cy', function (d) { return d.y; });
+  }
+});
+
+function dragStart (d) {
+  if (!d3.event.active) forceSim.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragging (d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragEnd (d) {
+  if (!d3.event.active) forceSim.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+
+function distance (d) {
+  if (d.source.firstVolume === d.target.firstVolume)
+    return 30;
+  else return 0.95 * Math.abs(xGravity(d.source.firstVolume) - xGravity(d.target.firstVolume));
+}
+
+</script>

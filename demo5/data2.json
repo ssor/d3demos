@@ -1,0 +1,111 @@
+{
+    "nodes": [
+        {
+            "id": "FIN_001",
+            "r": 20,
+            "color": "red"
+        },
+        {
+            "id": "FIN_002",
+            "r": 20,
+            "color": "blue"
+        },
+        {
+            "id": "KA_001",
+            "r": 10
+        },
+        {
+            "id": "KA_002",
+            "r": 10
+        },
+        {
+            "id": "KA_003",
+            "r": 10
+        },
+        {
+            "id": "KA_004",
+            "r": 10
+        },
+        {
+            "id": "KA_005",
+            "r": 10
+        },
+        {
+            "id": "KA_006",
+            "r": 10
+        },
+        {
+            "id": "KA_007",
+            "r": 10
+        },
+        {
+            "id": "KA_008",
+            "r": 10
+        }
+    ],
+    "links": [
+        {
+            "source": "FIN_001",
+            "target": "KA_001",
+            "color": "red"
+        },
+        {
+            "source": "FIN_002",
+            "color": "blue",
+            "target": "KA_001"
+        },
+        {
+            "source": "KA_001",
+            "color": "red",
+            "target": "KA_002"
+        },
+        {
+            "source": "KA_001",
+            "color": "blue",
+            "target": "KA_002"
+        },
+        {
+            "source": "KA_001",
+            "color": "red",
+            "target": "KA_003"
+        },
+        {
+            "source": "KA_002",
+            "color": "red",
+            "target": "KA_005"
+        },
+        {
+            "source": "KA_002",
+            "color": "red",
+            "target": "KA_004"
+        },
+        {
+            "source": "KA_002",
+            "color": "blue",
+            "target": "KA_004"
+        },
+        {
+            "source": "KA_004",
+            "color": "blue",
+            "target": "KA_006"
+        },
+        {
+            "source": "KA_005",
+            "color": "blue",
+            "target": "KA_007"
+        },
+        {
+            "source": "KA_005",
+            "color": "red",
+            "target": "KA_008"
+        }
+    ],
+    "companies": [
+        {
+            "id": "KA_016"
+        },
+        {
+            "id": "KA_017"
+        }
+    ]
+}

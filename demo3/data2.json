@@ -1,0 +1,200 @@
+{
+    "nodes": [
+        {
+            "id": "FIN_001",
+            "r": 20,
+            "color":"red"
+        },
+        {
+            "id": "CC-FIN_001-KA_001",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "FIN_002",
+            "r": 20,
+            "color":"blue"
+        },
+        {
+            "id": "CC_FIN_002-KA_001",
+            "r": 10,
+            "color":"blue"
+        },
+        {
+            "id": "KA_001",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_001-KA_001-KA_002-01",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "CC-FIN_002-KA_001-KA_002-02",
+            "r": 10,
+            "color":"blue"
+        },
+        {
+            "id": "KA_002",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_001-KA_001-KA_003-01",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "KA_003",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_001-KA_002-KA_004-01",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "CC-FIN_002-KA_002-KA_004-02",
+            "r": 10,
+            "color":"blue"
+        },
+        {
+            "id": "KA_004",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_001-KA_002-KA_005-01",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "KA_005",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_002-KA_004-KA_006-01",
+            "r": 10,
+            "color":"blue"
+        },
+        {
+            "id": "KA_006",
+            "r": 10
+        },
+        {
+            "id": "KA_007",
+            "r": 10
+        },
+        {
+            "id": "KA_008",
+            "r": 10
+        },
+        {
+            "id": "CC-FIN_001-KA_005-KA_007-01",
+            "r": 10,
+            "color":"red"
+        },
+        {
+            "id": "CC-FIN_001-KA_005-KA_008-01",
+            "r": 10,
+            "color":"red"
+        }
+    ],
+    "links": [
+        {
+            "source": "FIN_001",
+            "target": "CC-FIN_001-KA_001"
+        },
+        {
+            "source": "CC-FIN_001-KA_001",
+            "target": "KA_001"
+        },
+        {
+            "source": "FIN_002",
+            "target": "CC_FIN_002-KA_001"
+        },
+        {
+            "source": "CC_FIN_002-KA_001",
+            "target": "KA_001"
+        },
+        {
+            "source": "KA_001",
+            "target": "CC-FIN_001-KA_001-KA_002-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_001-KA_002-01",
+            "target": "KA_002"
+        },
+        {
+            "source": "KA_001",
+            "target": "CC-FIN_002-KA_001-KA_002-02"
+        },
+        {
+            "source": "CC-FIN_002-KA_001-KA_002-02",
+            "target": "KA_002"
+        },
+        {
+            "source": "KA_001",
+            "target": "CC-FIN_001-KA_001-KA_003-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_001-KA_003-01",
+            "target": "KA_003"
+        },
+        {
+            "source": "KA_002",
+            "target": "CC-FIN_001-KA_002-KA_005-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_002-KA_005-01",
+            "target": "KA_005"
+        },
+        {
+            "source": "KA_002",
+            "target": "CC-FIN_001-KA_002-KA_004-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_002-KA_004-01",
+            "target": "KA_004"
+        },
+        {
+            "source": "KA_002",
+            "target": "CC-FIN_002-KA_002-KA_004-02"
+        },
+        {
+            "source": "CC-FIN_002-KA_002-KA_004-02",
+            "target": "KA_004"
+        },
+        {
+            "source": "KA_004",
+            "target": "CC-FIN_002-KA_004-KA_006-01"
+        },
+        {
+            "source": "CC-FIN_002-KA_004-KA_006-01",
+            "target": "KA_006"
+        },
+        {
+            "source": "KA_005",
+            "target": "CC-FIN_001-KA_005-KA_007-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_005-KA_007-01",
+            "target": "KA_007"
+        },
+        {
+            "source": "KA_005",
+            "target": "CC-FIN_001-KA_005-KA_008-01"
+        },
+        {
+            "source": "CC-FIN_001-KA_005-KA_008-01",
+            "target": "KA_008"
+        }
+
+    ],
+    "companies": [
+        {
+            "id": "KA_016"
+        },
+        {
+            "id": "KA_017"
+        }
+    ]
+}

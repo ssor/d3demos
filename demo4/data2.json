@@ -1,0 +1,42 @@
+{
+    "name": "credits",
+    "children": [
+        {
+            "name": "FIN_001",
+            "r": 20,
+            "color": "red",
+            "children": [
+                {
+                    "name": "CC-FIN_001-KA_001",
+                    "r": 10,
+                    "children": [
+                        {
+                            "name": "KA_001",
+                            "r": 10
+                        }
+                    ],
+                    "color": "red"
+                }
+            ]
+        },
+        {
+            "name": "FIN_002",
+            "r": 20,
+            "children": [
+                {
+                    "name": "CC_FIN_002-KA_001",
+                    "r": 10,
+                    "children": [
+                        {
+                            "name": "KA_001",
+                            "r": 10
+                        }
+                    ],
+                    "color": "blue"
+                }
+            ],
+            "color": "blue"
+        }
+
+    ]
+}

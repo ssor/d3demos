@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <script src="../js/d3.v5.js"></script>
+    <style>
+        body {
+            margin: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        svg {
+            display: block;
+            margin: auto;
+        }
+
+        #chart {
+            width: calc(100vw - 100px);
+            height: 100vh;
+            overflow: auto;
+        }
+        .label{
+            font-size: 14px;
+            fill: white;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var rectWidthSet = [4, 8, 15, 16, 23, 42];
+        var xLinearScale = d3.scaleLinear()
+            .domain([0, d3.max(rectWidthSet)])
+            .range([0, 300]);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", 512)
+            .attr("height", 512);
+
+        var rectHeight = 25;
+
+
+        svg.selectAll("rect")
+            .data(rectWidthSet)
+            .enter().append("rect")
+            .attr("x", 10)
+            .attr("y", function (d, i) {
+                return i * rectHeight + 20;
+            })
+            .attr("height", rectHeight - 2)
+            .attr("width", function (d) {
+                return xLinearScale(0);
+            })
+            .transition()
+            .duration(2000)
+            .ease(d3.easeElastic)
+            .attr("width", function (d) {
+                return xLinearScale(d);
+            })
+            .attr("fill", "red");
+
+        var axis = d3.axisBottom()
+        .scale(xLinearScale).ticks(10);
+
+        svg.append("g")
+        .attr("transform","translate(10,200)").call(axis);
+
+        svg.selectAll(".label").data(rectWidthSet).enter()
+        .append("text").attr("class", "label")
+        .attr("x", function(d,i){
+            return xLinearScale(d)-15;
+        })
+        .attr("y", function(d, i){
+            return i * rectHeight + 20+15; 
+        })
+        .text(function(d){
+            return d
+        })
+
+    </script>
+</body>
